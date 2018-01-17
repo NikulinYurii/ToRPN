@@ -75,7 +75,7 @@ public class Main {
     }
 
     public static List<String[]> read(String pathToFile) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(FILEREAD_PATH));
+        BufferedReader reader = new BufferedReader(new FileReader(pathToFile));
         List<String[]> lines = new ArrayList<>();
         int linesToRead = Integer.valueOf(reader.readLine());
 
@@ -85,8 +85,13 @@ public class Main {
         }
 
         for (int i = 1; reader.ready(); i++) {
-            if (linesToRead >= i && conditions(reader.readLine())) {
-                lines.add(reader.readLine().split(""));
+            String readLine = reader.readLine();
+
+            if (readLine.split("")[0].equals("[")) {
+                readLine = reader.readLine();
+            }
+            if (linesToRead >= i && readLine.split("").length <= 400) {
+                lines.add(readLine.split(""));
             } else {
                 break;
             }
@@ -94,31 +99,6 @@ public class Main {
 
         return lines;
     }
-
-    public static boolean conditions(String text) {
-
-        String[] textArr = text.split("");
-        List<String> newTexrArr = new ArrayList<>();
-
-        for (int i = 0; i < textArr.length; i++) {
-            if (textArr[i] == "[") {
-                i++;
-                while (textArr[i] != "]" || textArr.length <= i) {
-                    i++;
-                }
-            } else {
-                newTexrArr.add(textArr[i]);
-            }
-        }
-        if (newTexrArr.size() >= 400) {
-            return false;
-        }
-
-        return true;
-    }
-
-
-
 
     public static void main(String[] args) throws IOException {
 
@@ -129,7 +109,7 @@ public class Main {
             String[] output = infixToRPN(inputList.get(i));
 
             for (String token : output) {
-                fileWriter.write(token + " ");
+                fileWriter.write(token);
             }
             fileWriter.write("\n");
             fileWriter.flush();
